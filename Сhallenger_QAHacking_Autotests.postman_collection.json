@@ -1,0 +1,3974 @@
+{
+	"info": {
+		"_postman_id": "90179297-0380-4078-aa2b-8673460abc40",
+		"name": "Сhallenger QAHacking Autotests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20929855",
+		"_collection_link": "https://www.postman.com/red-sunset-790868/workspace/qahacking-ready-collections/collection/20929855-90179297-0380-4078-aa2b-8673460abc40?action=share&creator=20929855&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Cases",
+			"item": [
+				{
+					"name": "toDo",
+					"item": [
+						{
+							"name": "Create - Modify - Delete",
+							"item": [
+								{
+									"name": "03 GET /todos (200)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"    let jsonData = pm.response.json();",
+													"",
+													"pm.test(\"Save first todo id to globals\", function () {",
+													"    pm.globals.set(\"firstTodoId\", jsonData.todos[0].id);",
+													"});",
+													"",
+													"pm.test(\"Response has todos array\", function () {",
+													"    pm.expect(jsonData).to.have.property('todos');",
+													"});",
+													"",
+													"pm.test(\"Each todo has id\", function () {",
+													"    jsonData.todos.forEach(todo => {",
+													"        pm.expect(todo).to.have.property('id');",
+													"    });",
+													"});",
+													"pm.test(\"Each todo has title\", function () {",
+													"    jsonData.todos.forEach(todo => {",
+													"        pm.expect(todo).to.have.property('title');",
+													"    });",
+													"});",
+													"pm.test(\"Each todo has doneStatus\", function () {",
+													"    jsonData.todos.forEach(todo => {",
+													"        pm.expect(todo).to.have.property('doneStatus');",
+													"    });",
+													"});",
+													"pm.test(\"Each todo has description\", function () {",
+													"    jsonData.todos.forEach(todo => {",
+													"        pm.expect(todo).to.have.property('description');",
+													"    });",
+													"});",
+													"",
+													"pm.test(\"All todo ids are positive numbers\", function () {",
+													"    jsonData.todos.forEach(todo => {",
+													"        pm.expect(todo.id).to.be.a('number');",
+													"        pm.expect(todo.id).to.be.above(0);",
+													"    });",
+													"});",
+													"",
+													"pm.test(\"Each todo's id is a number\", function () {",
+													"    jsonData.todos.forEach(todo => {",
+													"        pm.expect(typeof todo.id).to.eql('number');",
+													"    });",
+													"});",
+													"",
+													"pm.test(\"Each todo's title is a string\", function () {",
+													"    jsonData.todos.forEach(todo => {",
+													"        pm.expect(typeof todo.title).to.eql('string');",
+													"    });",
+													"});",
+													"",
+													"pm.test(\"Each todo's doneStatus is a boolean\", function () {",
+													"    jsonData.todos.forEach(todo => {",
+													"        pm.expect(typeof todo.doneStatus).to.eql('boolean');",
+													"    });",
+													"});",
+													"",
+													"pm.test(\"Each todo's description is a string\", function () {",
+													"    jsonData.todos.forEach(todo => {",
+													"        pm.expect(typeof todo.description).to.eql('string');",
+													"    });",
+													"});",
+													"",
+													"jsonData.todos.forEach(function(todo) {",
+													"    pm.test(`ID for todo \"${todo.title}\" is within the expected range`, function() {",
+													"        pm.expect(todo.id).to.be.within(100, 999);",
+													"    });",
+													"});",
+													"",
+													"pm.test(\"Every todo has an id of three digits\", function () {",
+													"    let jsonData = pm.response.json();",
+													"",
+													"    jsonData.todos.forEach(todo => {",
+													"        let id = todo.id.toString(); //преобразовываем id в String чтобы посчитать его длину",
+													"        pm.expect(id).to.have.lengthOf(3); //проверяем что длина id равна 3",
+													"        pm.expect(Number.isInteger(todo.id)).to.be.true; //проверяем, что id целое число, без точек",
+													"    });",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"//отправляем запрос для создания X-Challenger и сохраняем результат в переменную",
+													"pm.sendRequest({",
+													"    url: 'https://apichallenges.herokuapp.com/challenger',",
+													"    method: 'POST',",
+													"}, function(err, res) {",
+													"    // Обработка ошибок при отправке запроса",
+													"    if (err) { ",
+													"        console.error(err);",
+													"    } else {",
+													"        // Запись значения X-Challenger из заголовков ответа в глобальные переменные",
+													"        pm.globals.set(\"XChS1\", res.headers.get(\"X-Challenger\"));",
+													"    }",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChS1}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "05 GET /todos/id (200)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChS1}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-Challenger",
+												"value": "{{xCh}}",
+												"type": "text",
+												"disabled": true
+											}
+										],
+										"url": {
+											"raw": "{{hostChallenger}}/todos/{{firstTodoId}}",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos",
+												"{{firstTodoId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "08 POST /todos (201)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});",
+													"",
+													"let jsonData = pm.response.json();",
+													"",
+													"pm.test(\"Title is correct\", function () {",
+													"    pm.expect(jsonData.title).to.eql(pm.globals.get(\"randomName\"));",
+													"});",
+													"",
+													"pm.test(\"Done status is correct\", function () {",
+													"    pm.expect(jsonData.doneStatus).to.eql(true);",
+													"});",
+													"",
+													"pm.test(\"Description is correct\", function () {",
+													"    pm.expect(jsonData.description).to.eql(pm.globals.get(\"randomDescription\"));",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"window = {};",
+													"",
+													"pm.sendRequest(\"https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js\", (error, response) => {",
+													"",
+													"    eval(response.text());",
+													"",
+													"    window.faker.locale=\"ru\";",
+													"    pm.globals.set(\"randomName\", window.faker.name.firstName() + \" \" + window.faker.name.lastName());",
+													"    pm.globals.set(\"randomDescription\",window.faker.address.streetAddress());",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChS1}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"{{randomName}}\",\r\n    \"doneStatus\": true,\r\n    \"description\": \"{{randomDescription}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "11 POST /todos/{id} (200)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChS1}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"file paperwork 1\",\r\n    \"doneStatus\": true,\r\n    \"description\": \"description\"\r\n}"
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos/{{firstTodoId}}",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos",
+												"{{firstTodoId}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "12 DELETE /todos/{id} (200)",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChS1}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{hostChallenger}}/todos/{{firstTodoId}}",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos",
+												"{{firstTodoId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"auth": {
+								"type": "apikey",
+								"apikey": [
+									{
+										"key": "key",
+										"value": "X-Challenger",
+										"type": "string"
+									},
+									{
+										"key": "value",
+										"value": "XChS1",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"pm.sendRequest({",
+											"    url: 'https://apichallenges.herokuapp.com/challenger',",
+											"    method: 'POST',",
+											"}, function(err, res) {",
+											"    // Обработка ошибок при отправке запроса",
+											"    if (err) { ",
+											"        console.error(err);",
+											"    } else {",
+											"        // Запись значения X-Challenger из заголовков ответа в глобальные переменные",
+											"        pm.globals.set(\"XChS1\", res.headers.get(\"X-Challenger\"));",
+											"    }",
+											"});",
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Filtration",
+							"item": [
+								{
+									"name": "01 /todos Проверяем, что в ответе есть все новые toDo",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"//проверяем, что в ответе есть все id, которые были созданы в Pre-request Script",
+													"let jsonData = pm.response.json();",
+													"",
+													"// перебираем массив из сохраненных id и проверяем, что каждый из них есть в ответе",
+													"for (let i = 0; i < 5; i++) {",
+													"    // получаем id из глобальных переменных",
+													"    let trueId = pm.globals.get(`doneStatusTrue${i}`);",
+													"    let falseId = pm.globals.get(`doneStatusFalse${i}`);",
+													"",
+													"    // проверяем, что каждый id присутствует в списке id из ответа",
+													"    pm.test(`Response contains id ${trueId}`, function() {",
+													"        let idExists = jsonData.todos.some(todo => todo.id == trueId);",
+													"        pm.expect(idExists).to.be.true;",
+													"    });",
+													"",
+													"    pm.test(`Response contains id ${falseId}`, function() {",
+													"        let idExists = jsonData.todos.some(todo => todo.id == falseId);",
+													"        pm.expect(idExists).to.be.true;",
+													"    });",
+													"}",
+													"",
+													"//считаем сколько в ответе toDo со статусom true и сколько false",
+													"let trueCount = 0;",
+													"let falseCount = 0;",
+													"",
+													"jsonData.todos.forEach(todo => {",
+													"    if(todo.doneStatus === true) {",
+													"        trueCount++;",
+													"    } else if(todo.doneStatus === false) {",
+													"        falseCount++;",
+													"    }",
+													"});",
+													"",
+													"// сохраняем результаты подсчета в глобальные переменные",
+													"pm.globals.set(\"trueCount\", trueCount);",
+													"pm.globals.set(\"falseCount\", falseCount);",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"// Отправляем запрос для создания X-Challenger и сохраняем результат в переменную",
+													"pm.sendRequest({",
+													"    url: 'https://apichallenges.herokuapp.com/challenger',",
+													"    method: 'POST',",
+													"}, function(err, res) {",
+													"    // Обработка ошибок при отправке запроса",
+													"    if (err) { ",
+													"        console.error(err);",
+													"    } else {",
+													"        // Запись значения X-Challenger из заголовков ответа в глобальные переменные",
+													"        pm.globals.set(\"XChFiltration\", res.headers.get(\"X-Challenger\"));",
+													"    }",
+													"});",
+													"",
+													"// Создаем методом POST переменные для списка проверок",
+													"const baseUrl = 'https://apichallenges.herokuapp.com/todos';",
+													"const XChallenger = pm.globals.get('XChFiltration');",
+													"",
+													"// Отправляем запросы для создания to-do и сохраняем идентификаторы в глобальных переменных",
+													"for (let i = 0; i < 5; i++) {",
+													"    // Создаем to-do с doneStatus = true",
+													"    pm.sendRequest({",
+													"        url: baseUrl,",
+													"        method: 'POST',",
+													"        header: {",
+													"            'Content-Type': 'application/json',",
+													"            'X-Challenger': XChallenger",
+													"        },",
+													"        body: {",
+													"            mode: 'raw',",
+													"            raw: JSON.stringify({",
+													"                title: \"title\",",
+													"                doneStatus: true,",
+													"                description: \"description\"",
+													"            })",
+													"        }",
+													"    }, function(err, res) {",
+													"        if (err) {",
+													"            console.error(err);",
+													"        } else {",
+													"            pm.globals.set(`doneStatusTrue${i}`, res.json().id);",
+													"        }",
+													"    });",
+													"",
+													"    // Создаем to-do с doneStatus = false",
+													"    pm.sendRequest({",
+													"        url: baseUrl,",
+													"        method: 'POST',",
+													"        header: {",
+													"            'Content-Type': 'application/json',",
+													"            'X-Challenger': XChallenger",
+													"        },",
+													"        body: {",
+													"            mode: 'raw',",
+													"            raw: JSON.stringify({",
+													"                title: \"title\",",
+													"                doneStatus: false,",
+													"                description: \"description\"",
+													"            })",
+													"        }",
+													"    }, function(err, res) {",
+													"        if (err) {",
+													"            console.error(err);",
+													"        } else {",
+													"            pm.globals.set(`doneStatusFalse${i}`, res.json().id);",
+													"        }",
+													"    });",
+													"}"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChS1}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "02 /todos DoneStatus = true",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"let jsonData = pm.response.json(); ",
+													"",
+													"pm.test(\"All todos have doneStatus true\", function () {",
+													"    for (var i = 0; i < jsonData.todos.length; i++) {",
+													"        pm.expect(jsonData.todos[i].doneStatus).to.eql(true);",
+													"    }",
+													"});",
+													"",
+													"// проверяем, что в ответе вернулись все toDo = true из предыдущего, неотфильтрованного запроса",
+													"let trueCountInResponse = 0;",
+													"",
+													"jsonData.todos.forEach(todo => {",
+													"    if(todo.doneStatus === true) {",
+													"        trueCountInResponse++;",
+													"    }",
+													"});",
+													"",
+													"// проверяем, что количество todo со статусом true в ответе равно значению глобальной переменной trueCount",
+													"pm.test('Number of todos with true status matches global count', function() {",
+													"    pm.expect(trueCountInResponse).to.eql(pm.globals.get(\"trueCount\"));",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChS1}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos?doneStatus=true",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											],
+											"query": [
+												{
+													"key": "doneStatus",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "03 /todos DoneStatus = false",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"    let jsonData = pm.response.json();",
+													"",
+													"pm.test(\"All todos have doneStatus false\", function () {",
+													"",
+													"    for (var i = 0; i < jsonData.todos.length; i++) {",
+													"        pm.expect(jsonData.todos[i].doneStatus).to.eql(false);",
+													"    }",
+													"});",
+													"",
+													"",
+													"// проверяем, что в ответе вернулись все toDo = true из предыдущего, неотфильтрованного запроса",
+													"let falseCountInResponse = 0;",
+													"",
+													"jsonData.todos.forEach(todo => {",
+													"    if(todo.doneStatus === false) {",
+													"        falseCountInResponse++;",
+													"    }",
+													"});",
+													"",
+													"// проверяем, что количество todo со статусом false в ответе равно значению глобальной переменной falseCount",
+													"pm.test('Number of todos with false status matches global count', function() {",
+													"    pm.expect(falseCountInResponse).to.eql(pm.globals.get(\"falseCount\"));",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChS1}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos?doneStatus=false",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											],
+											"query": [
+												{
+													"key": "doneStatus",
+													"value": "false"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"// Отправляем запрос для создания X-Challenger и сохраняем результат в переменную",
+											"pm.sendRequest({",
+											"    url: 'https://apichallenges.herokuapp.com/challenger',",
+											"    method: 'POST',",
+											"}, function(err, res) {",
+											"    // Обработка ошибок при отправке запроса",
+											"    if (err) { ",
+											"        console.error(err);",
+											"    } else {",
+											"        // Запись значения X-Challenger из заголовков ответа в глобальные переменные",
+											"        pm.globals.set(\"XChFiltration\", res.headers.get(\"X-Challenger\"));",
+											"    }",
+											"});"
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "POST /todos",
+							"item": [
+								{
+									"name": "01 /todos Все поля заполнены",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});",
+													"",
+													"let jsonData = pm.response.json();",
+													"",
+													"pm.test(\"Title is correct\", function () {",
+													"    pm.expect(jsonData.title).to.eql(\"title\");",
+													"});",
+													"",
+													"pm.test(\"Done status is correct\", function () {",
+													"    pm.expect(jsonData.doneStatus).to.eql(true);",
+													"});",
+													"",
+													"pm.test(\"Description is correct\", function () {",
+													"    pm.expect(jsonData.description).to.eql(\"description\");",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"//отправляем запрос для создания X-Challenger и сохраняем результат в переменную",
+													"pm.sendRequest({",
+													"    url: 'https://apichallenges.herokuapp.com/challenger',",
+													"    method: 'POST',",
+													"}, function(err, res) {",
+													"    // Обработка ошибок при отправке запроса",
+													"    if (err) { ",
+													"        console.error(err);",
+													"    } else {",
+													"        // Запись значения X-Challenger из заголовков ответа в глобальные переменные",
+													"        pm.globals.set(\"XChPostToDo\", res.headers.get(\"X-Challenger\"));",
+													"    }",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChPostToDo}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"title\",\r\n    \"doneStatus\": true,\r\n    \"description\": \"description\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "02 /todos Title и Description по 5000 знаков",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});",
+													"",
+													"let jsonData = pm.response.json();",
+													"",
+													"pm.test(\"Title is correct\", function () {",
+													"    pm.expect(jsonData.title).to.eql(\"Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).\");",
+													"});",
+													"",
+													"pm.test(\"Done status is correct\", function () {",
+													"    pm.expect(jsonData.doneStatus).to.eql(true);",
+													"});",
+													"",
+													"pm.test(\"Description is correct\", function () {",
+													"    pm.expect(jsonData.description).to.eql(\"Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).\");",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChPostToDo}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).\",\r\n    \"doneStatus\": true,\r\n    \"description\": \"Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).Crear un tablero de visión puede ayudarte a dejar de lado las distracciones innecesarias, concentrarte en tus deseos y servir como un poderoso catalizador para el cambio en tu vida. Sin embargo, es esencial recordar que sin dar pasos activos y esforzarte continuamente por mejorar, ningún tablero de visión puede hacer realidad tus sueños. Así que mantén tus ojos en el premio, mantente motivado y tal vez incluso te rías un poco de tus sueños de unicornios, sabiendo que con trabajo duro y determinación, puedes lograr cualquier cosa (bueno, casi cualquier cosa – no podemos garantizar ese unicornio mascota).\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "03 /todos Description пустой",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});",
+													"",
+													"let jsonData = pm.response.json();",
+													"",
+													"pm.test(\"Title is correct\", function () {",
+													"    pm.expect(jsonData.title).to.eql(\"1\");",
+													"});",
+													"",
+													"pm.test(\"Done status is correct\", function () {",
+													"    pm.expect(jsonData.doneStatus).to.eql(true);",
+													"});",
+													"",
+													"pm.test(\"Description is correct\", function () {",
+													"    pm.expect(jsonData.description).to.eql(\"\");",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChPostToDo}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"1\",\r\n    \"doneStatus\": true,\r\n    \"description\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "04 /todos Title пустой (негатив)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Validation error for empty title\", function () {",
+													"    let jsonData = pm.response.json();  // Получение JSON из ответа",
+													"    pm.expect(jsonData).to.have.property('errorMessages');  // Проверка на наличие свойства 'errorMessages'",
+													"    pm.expect(jsonData.errorMessages[0]).to.eql('Failed Validation: title : can not be empty');  // Проверка на содержание конкретного сообщения об ошибке",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChPostToDo}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"\",\r\n    \"doneStatus\": true,\r\n    \"description\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "05 /todos doneStatus не boolean (негатив)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 400\", function () {",
+													"    pm.response.to.have.status(400);",
+													"});",
+													"",
+													"pm.test(\"Validation error for empty title\", function () {",
+													"    let jsonData = pm.response.json();  // Получение JSON из ответа",
+													"    pm.expect(jsonData).to.have.property('errorMessages');  // Проверка на наличие свойства 'errorMessages'",
+													"    pm.expect(jsonData.errorMessages[0]).to.eql('Failed Validation: doneStatus should be BOOLEAN');  // Проверка на содержание конкретного сообщения об ошибке",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChPostToDo}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"{{$randomCatchPhrase}}\",\r\n    \"doneStatus\": \"true\",\r\n    \"description\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "06 /todos  doneStatus отсутствует в запрсое",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "apikey",
+											"apikey": [
+												{
+													"key": "value",
+													"value": "{{XChPostToDo}}",
+													"type": "string"
+												},
+												{
+													"key": "key",
+													"value": "X-Challenger",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"{{$randomCommonFileName}}\",\r\n    \"description\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "06 /todos без авторизации",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {",
+													"    pm.response.to.have.status(201);",
+													"});",
+													"",
+													"let jsonData = pm.response.json();",
+													"",
+													"pm.test(\"Done status is correct\", function () {",
+													"    pm.expect(jsonData.doneStatus).to.eql(false);",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"title\": \"{{$randomJobDescriptor}}\",\r\n    \"description\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{hostChallenger}}/todos",
+											"host": [
+												"{{hostChallenger}}"
+											],
+											"path": [
+												"todos"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "01 POST /challenger (201)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let xChallenger = pm.response.headers.get(\"X-Challenger\");",
+							"pm.globals.set(\"X-CH\", xChallenger)",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/challenger",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"challenger"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 GET /challenges (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Получение данных из ответа в формате JSON и присваивание их переменной jsonData",
+							"    let jsonData = pm.response.json();",
+							"",
+							"// Проверяем, что только первые 2 челленджа в статусе true",
+							"pm.test(\"Status of challenges\", function () {",
+							"",
+							"    // Создаем пустой массив errors для сохранения информации об ошибках, которые мы можем обнаружить в процессе теста.",
+							"    let errors = [];",
+							"",
+							"    // Создаем цикл for, который будет перебирать каждый вызов в массиве challenges.",
+							"    for (let i = 0; i < jsonData.challenges.length; i++) {",
+							"",
+							"        // Извлекаем информацию о текущем вызове и сохраняем ее в переменной challenge.",
+							"        let challenge = jsonData.challenges[i];",
+							"",
+							"        // Преобразуем id вызова из строки в число и сохраняем его в переменной id.",
+							"        let id = Number(challenge.id);",
+							"",
+							"        // Если id вызова меньше или равно 2 и его статус не равен true, то мы добавляем в массив errors информацию об этой ошибке.",
+							"        if (id <= 2 && challenge.status !== true) {",
+							"            errors.push(`id ${challenge.id} должно быть true, а нe ${challenge.status} `);",
+							"        } ",
+							"        // Если id вызова больше или равно 3 и его статус не равен false, то мы также добавляем в массив errors информацию об этой ошибке.",
+							"        else if (id >= 3 && challenge.status !== false) {",
+							"            errors.push(`id ${challenge.id} должно быть false, а нe ${challenge.status} `);",
+							"        }",
+							"    }",
+							"",
+							"    // Если в массиве errors есть хотя бы одна ошибка, то мы выводим все ошибки в формате строки и выбрасываем новую ошибку.",
+							"    if (errors.length > 0) {",
+							"        throw new Error('Найдены следующие ошибки: \\n' + errors.join('\\n'));",
+							"    }",
+							"});",
+							"",
+							"",
+							"// Проверка, что каждый id вызова уникален",
+							"pm.test(\"All challenge ids are unique\", function () {",
+							"",
+							"    // Создание нового массива ids, состоящего из id каждого вызова в массиве challenges",
+							"    let ids = jsonData.challenges.map(challenge => challenge.id);",
+							"",
+							"    // Создание нового массива uniqueIds, в котором будут только уникальные id ",
+							"    // (дубликаты будут удалены)",
+							"    // Для этого используется Set, который является структурой данных, хранящей только ",
+							"    // уникальные значения",
+							"    // Используется оператор распространения (...), чтобы преобразовать Set обратно в массив",
+							"    let uniqueIds = [...new Set(ids)];",
+							"",
+							"    // Ожидается, что количество id в исходном массиве и в массиве уникальных id будет одинаковым",
+							"    // Если это условие выполняется, значит, все id были уникальными",
+							"    // Если не выполняется, значит, некоторые id были не уникальными (встречались более одного раза)",
+							"    pm.expect(ids.length).to.eql(uniqueIds.length);",
+							"});",
+							"",
+							"// Проверка, что каждый id вызова уникален. Вариант 2",
+							"pm.test(\"All challenge ids are unique v.2\", function () {",
+							"    let ids = jsonData.challenges.map(challenge => challenge.id);",
+							"    let uniqueIds = {};",
+							"",
+							"    ids.forEach(id => {",
+							"        if (uniqueIds[id]) {",
+							"            // Если id уже присутствует в объекте uniqueIds, это означает, ",
+							"            // что мы имеем дело с дубликатом",
+							"            throw new Error('Duplicate id found: ' + id);",
+							"        } else {",
+							"            // Если id нет в объекте uniqueIds, добавим его туда",
+							"            uniqueIds[id] = true;",
+							"        }",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Every challenge has an id of 2 digits\", function () {",
+							"    let jsonData = pm.response.json();",
+							"",
+							"    jsonData.challenges.forEach(challenge => {",
+							"        let id = challenge.id;",
+							"        pm.expect(id).to.have.lengthOf(2); // проверяем что длина id равна 2",
+							"        console.log(challenge.id)",
+							"    });",
+							"    ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/challenges",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"challenges"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 GET /todos (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"    let jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Save first todo id to globals\", function () {",
+							"    pm.globals.set(\"firstTodoId\", jsonData.todos[0].id);",
+							"});",
+							"",
+							"pm.test(\"Response has todos array\", function () {",
+							"    pm.expect(jsonData).to.have.property('todos');",
+							"});",
+							"",
+							"pm.test(\"Each todo has id\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(todo).to.have.property('id');",
+							"    });",
+							"});",
+							"pm.test(\"Each todo has title\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(todo).to.have.property('title');",
+							"    });",
+							"});",
+							"pm.test(\"Each todo has doneStatus\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(todo).to.have.property('doneStatus');",
+							"    });",
+							"});",
+							"pm.test(\"Each todo has description\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(todo).to.have.property('description');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"All todo ids are positive numbers\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(todo.id).to.be.a('number');",
+							"        pm.expect(todo.id).to.be.above(0);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Each todo's id is a number\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(typeof todo.id).to.eql('number');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Each todo's title is a string\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(typeof todo.title).to.eql('string');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Each todo's doneStatus is a boolean\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(typeof todo.doneStatus).to.eql('boolean');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Each todo's description is a string\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(typeof todo.description).to.eql('string');",
+							"    });",
+							"});",
+							"",
+							"jsonData.todos.forEach(function(todo) {",
+							"    pm.test(`ID for todo \"${todo.title}\" is within the expected range`, function() {",
+							"        pm.expect(todo.id).to.be.within(100, 999);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Every todo has an id of three digits\", function () {",
+							"    let jsonData = pm.response.json();",
+							"",
+							"    jsonData.todos.forEach(todo => {",
+							"        let id = todo.id.toString(); //преобразовываем id в String чтобы посчитать его длину",
+							"        pm.expect(id).to.have.lengthOf(3); //проверяем что длина id равна 3",
+							"        pm.expect(Number.isInteger(todo.id)).to.be.true; //проверяем, что id целое число, без точек",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 GET /todos (200) RegEx",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"    let jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Save first todo id to globals\", function () {",
+							"    pm.globals.set(\"firstTodoId\", jsonData.todos[0].id);",
+							"});",
+							"",
+							"pm.test(\"Response has todos array\", function () {",
+							"    pm.expect(jsonData).to.have.property('todos');",
+							"});",
+							"",
+							"pm.test(\"Each todo has id\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(todo).to.have.property('id');",
+							"    });",
+							"});",
+							"pm.test(\"Each todo has title\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(todo).to.have.property('title');",
+							"    });",
+							"});",
+							"pm.test(\"Each todo has doneStatus\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(todo).to.have.property('doneStatus');",
+							"    });",
+							"});",
+							"pm.test(\"Each todo has description\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(todo).to.have.property('description');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"All todo ids are positive numbers\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(todo.id).to.be.a('number');",
+							"        pm.expect(todo.id).to.be.above(0);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Each todo's id is a number\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(typeof todo.id).to.eql('number');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Each todo's title is a string\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(typeof todo.title).to.eql('string');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Each todo's doneStatus is a boolean\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(typeof todo.doneStatus).to.eql('boolean');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Each todo's description is a string\", function () {",
+							"    jsonData.todos.forEach(todo => {",
+							"        pm.expect(typeof todo.description).to.eql('string');",
+							"    });",
+							"});",
+							"",
+							"jsonData.todos.forEach(function(todo) {",
+							"    pm.test(`ID for todo \"${todo.title}\" is within the expected range`, function() {",
+							"        pm.expect(todo.id).to.be.within(100, 999);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Every todo has an id of three digits\", function () {",
+							"    let jsonData = pm.response.json();",
+							"",
+							"    jsonData.todos.forEach(todo => {",
+							"        let id = todo.id.toString(); //преобразовываем id в String чтобы посчитать его длину",
+							"        pm.expect(id).to.have.lengthOf(3); //проверяем что длина id равна 3",
+							"        pm.expect(Number.isInteger(todo.id)).to.be.true; //проверяем, что id целое число, без точек",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 GET /todo (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Response body is absent\", function () {",
+							"    let responseBody = pm.response.text();",
+							"    pm.expect(responseBody).to.be.empty;",
+							"});",
+							"",
+							"pm.test(\"X-Challenger header is equal to global X-CH\", function () {",
+							"    let xChallengerHeaderValue = pm.response.headers.get(\"X-Challenger\");",
+							"    let xChGlobalValue = pm.globals.get(\"X-CH\");",
+							"    pm.expect(xChallengerHeaderValue).to.eql(xChGlobalValue);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{xCH}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/todo",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05 GET /todos/id (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{xCh}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/todos/{{firstTodoId}}",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos",
+						"{{firstTodoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06 GET /todos/id (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"let jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Response should have 'errorMessages' property\", function () {",
+							"    pm.expect(pm.response.json()).to.have.property('errorMessages');",
+							"});",
+							"",
+							"pm.test(\"'errorMessages' should be an array\", function () {",
+							"    pm.expect(jsonData.errorMessages).to.be.a('array');",
+							"});",
+							"",
+							"pm.test(\"'errorMessages' array should not be empty\", function () {",
+							"    pm.expect(jsonData.errorMessages.length).to.be.above(0);",
+							"});",
+							"",
+							"pm.test(\"'errorMessages' should contain expected error message\", function () {",
+							"    pm.expect(jsonData.errorMessages).to.include('Could not find an instance with todos/9999');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/todos/9999",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos",
+						"9999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07 HEAD /todos (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08 POST /todos (201)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"let jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Title is correct\", function () {",
+							"    pm.expect(jsonData.title).to.eql(pm.globals.get(\"randomName\"));",
+							"});",
+							"",
+							"pm.test(\"Done status is correct\", function () {",
+							"    pm.expect(jsonData.doneStatus).to.eql(true);",
+							"});",
+							"",
+							"pm.test(\"Description is correct\", function () {",
+							"    pm.expect(jsonData.description).to.eql(pm.globals.get(\"randomDescription\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"window = {};",
+							"",
+							"pm.sendRequest(\"https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js\", (error, response) => {",
+							"",
+							"    eval(response.text());",
+							"",
+							"    window.faker.locale=\"ru\";",
+							"    pm.globals.set(\"randomName\", window.faker.name.firstName() + \" \" + window.faker.name.lastName());",
+							"    pm.globals.set(\"randomDescription\",window.faker.address.streetAddress());",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"{{randomName}}\",\r\n    \"doneStatus\": true,\r\n    \"description\": \"{{randomDescription}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09 GET /todos (200) ?filter",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"All todos have doneStatus true\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    for (var i = 0; i < jsonData.todos.length; i++) {",
+							"        pm.expect(jsonData.todos[i].doneStatus).to.eql(true);",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/todos?doneStatus=true",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					],
+					"query": [
+						{
+							"key": "doneStatus",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10 POST /todos (400) doneStatus",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"create a failure\",\r\n    \"doneStatus\": trst,\r\n    \"description\": \"\"\r\n}"
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11 POST /todos/{id} (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"file paperwork 1\",\r\n    \"doneStatus\": true,\r\n    \"description\": \"description\"\r\n}"
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos/{{firstTodoId}}",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos",
+						"{{firstTodoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12 DELETE /todos/{id} (200)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/todos/{{firstTodoId}}",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos",
+						"{{firstTodoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "13 OPTIONS /todos (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "14 GET /todos (200) XML",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "15 GET /todos (200) JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "16 GET /todos (200) ANY",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "17 GET /todos (200) XML pref",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml, application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "18 GET /todos (200) no accept",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "19 GET /todos (406)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 406\", function () {",
+							"    pm.response.to.have.status(406);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/gzip",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "20 POST /todos XML",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    <todo>\r\n        <doneStatus>false</doneStatus>\r\n        <description/>\r\n        <title>schedule meeting 1</title>\r\n    </todo>"
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "21 POST /todos JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "        {\r\n            \"title\": \"schedule meeting 1\",\r\n            \"doneStatus\": false,\r\n            \"description\": \"\"\r\n        }"
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "22 POST /todos (415)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 415\", function () {",
+							"    pm.response.to.have.status(415);",
+							"}); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "bob",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "        {\r\n            \"title\": \"schedule meeting 3\",\r\n            \"doneStatus\": false,\r\n            \"description\": \"\"\r\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "23 POST /todos XML to JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    <todo>\r\n        <doneStatus>false</doneStatus>\r\n        <description/>\r\n        <title>scan paperwork</title>\r\n    </todo>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "24 POST /todos JSON to XML",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "        {\r\n            \"title\": \"escalate late payments\",\r\n            \"doneStatus\": false,\r\n            \"description\": \"\"\r\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "25 DELETE /heartbeat (405)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 405\", function () {",
+							"    pm.response.to.have.status(405);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/heartbeat",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "26 PATCH /heartbeat (500)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 500\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/heartbeat",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "27 TRACE /heartbeat (501)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 501\", function () {",
+							"    pm.response.to.have.status(501);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "TRACE",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/heartbeat",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "28 GET /heartbeat (204)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/heartbeat",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "29 POST /secret/token (401)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "test",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{X-CH}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/secret/token",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"secret",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "30 POST /secret/token (201)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"let x = pm.response.headers.get(\"X-Auth-Token\")",
+							"pm.globals.set(\"xAU\", x)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{X-CH}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/secret/token",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"secret",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "31 GET /secret/note (403)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-AUTH-TOKEN",
+						"value": "{{xAU}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/secret/note",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "32 GET /secret/note (401)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-AUTH-TOKEN",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/secret/note",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "33 GET /secret/note (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						},
+						{
+							"key": "in",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-AUTH-TOKEN",
+						"value": "{{xAU}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{hostChallenger}}/secret/note",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "34 POST /secret/note (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{xAU}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Auth-Token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{X-CH}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"note\":\"my note\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/secret/note",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "35 POST /secret/note (401)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "4ec5ada4-3722-4418-b70a-3a7483ccdc55",
+						"type": "text"
+					},
+					{
+						"key": "X-AUTH-TOKEN",
+						"value": "7072ad76-eef2-4294-a974-a7f57f7fe6b6",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"note\":\"my note\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/secret/note",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "36 POST /secret/note (403)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "4ec5ada4-3722-4418-b70a-3a7483ccdc55",
+						"type": "text"
+					},
+					{
+						"key": "X-AUTH-TOKEN",
+						"value": "7072ad76-eef2-4294-a974-a7f57f7fe6b7",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"note\":\"my note\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/secret/note",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "37 GET /secret/note (Bearer)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{xAU}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{X-CH}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"note\":\"my note\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/secret/note",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "38 POST /secret/note (Bearer)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{xAU}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Challenger",
+						"value": "{{X-CH}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"note\":\"my note\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/secret/note",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"secret",
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "39 DELETE /todos/{id} (200) all",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.sendRequest(\"https://apichallenges.herokuapp.com/todos\", function (err, response) {",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        let todoIds = response.json().todos.map(todo => todo.id);",
+							"        ",
+							"        todoIds.forEach(id => {",
+							"            pm.sendRequest({",
+							"                url: `https://apichallenges.herokuapp.com/todos/${id}`,",
+							"                method: 'DELETE'",
+							"            }, function (err, response) {",
+							"                if (err) {",
+							"                    console.log(err);",
+							"                } else {",
+							"                    console.log(`Todo ${id} deleted`);",
+							"                }",
+							"            });",
+							"        });",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest(\"https://apichallenges.herokuapp.com/todos\", function (err, response) {",
+							"    // Проверка на наличие ошибок",
+							"    if (err) { ",
+							"        console.log(err); ",
+							"    } else {",
+							"            pm.globals.set(\"firstTodoId\", response.json().todos[0].id);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{hostChallenger}}/todos/{{firstTodoId}}",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"todos",
+						"{{firstTodoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "40 GET /challenges (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Status of challenges based on id\", function () {",
+							"    let jsonData = pm.response.json();",
+							"    let errors = [];",
+							"    for (let i = 0; i < jsonData.challenges.length; i++) {",
+							"        let challenge = jsonData.challenges[i];",
+							"        let id = Number(challenge.id);",
+							"",
+							"        if (challenge.status !== true) {",
+							"            errors.push(`id ${challenge.id} должно быть true `)",
+							"        }",
+							"    }",
+							"",
+							"    if (errors.length > 0) {",
+							"        throw new Error('Найдены следующие ошибки: \\n' + errors.join('/' + '\\n' + '/'));",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{X-CH}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "X-Challenger",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/challenges",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"challenges"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{hostChallenger}}/gui/challenges/{{X-CH}}",
+					"host": [
+						"{{hostChallenger}}"
+					],
+					"path": [
+						"gui",
+						"challenges",
+						"{{X-CH}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "hostChallenger",
+			"value": "https://apichallenges.herokuapp.com",
+			"type": "string"
+		}
+	]
+}
